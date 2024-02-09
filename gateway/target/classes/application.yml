@@ -1,0 +1,84 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: customer
+          uri: http://localhost:8082
+          predicates:
+            - Path=/orders/**, 
+        - id: delivery
+          uri: http://localhost:8083
+          predicates:
+            - Path=/deliveryJobs/**, 
+        - id: business-owner
+          uri: http://localhost:8084
+          predicates:
+            - Path=/restaurants/**, 
+        - id: delivery-manager
+          uri: http://localhost:8085
+          predicates:
+            - Path=/deliveries/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: http://customer:8080
+          predicates:
+            - Path=/orders/**, 
+        - id: delivery
+          uri: http://delivery:8080
+          predicates:
+            - Path=/deliveryJobs/**, 
+        - id: business-owner
+          uri: http://businessOwner:8080
+          predicates:
+            - Path=/restaurants/**, 
+        - id: delivery-manager
+          uri: http://deliveryManager:8080
+          predicates:
+            - Path=/deliveries/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
